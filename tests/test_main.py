@@ -1,11 +1,17 @@
 from example.main import main
 
-def test_main(capsys):
+import pytest
+
+@pytest.mark.parametrize("print_strings", (False, True))
+def test_main(capsys, print_strings):
     strings = ("a", "b", "c")
 
-    main(strings)
+    if print_strings:
+        main([*strings, "--print"])
+    else:
+        main(strings)
 
     out = capsys.readouterr().out
 
-    assert str(strings) in out
+    assert bool(str(strings) in out) == print_strings
     assert '.'.join(strings) in out
